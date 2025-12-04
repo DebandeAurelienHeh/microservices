@@ -1,0 +1,1 @@
+docker run -d --name product-container -p 7002:9666 -e SPRING_PROFILES_ACTIVE=docker product-service:latest

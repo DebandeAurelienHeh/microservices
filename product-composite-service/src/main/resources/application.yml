@@ -1,0 +1,5 @@
+spring.application.name: product-composite-service
+server.port: 7001
+---
+spring.config.activate.on-profile: docker
+server.port: 9666
