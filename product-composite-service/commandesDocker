@@ -1,2 +1,2 @@
 docker build -t product-composite-service:latest ./product-composite-service
-docker run -d --name product-composite-container -p 7003:9666 -e SPRING_PROFILES_ACTIVE=docker product-composite-service:latest
+docker run -d --name product-composite-container -p 7001:9666 -e SPRING_PROFILES_ACTIVE=docker product-composite-service:latest

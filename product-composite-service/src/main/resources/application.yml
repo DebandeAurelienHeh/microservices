@@ -1,5 +1,29 @@
 spring.application.name: product-composite-service
 server.port: 7001
+
+app:
+  product-service:
+    host: localhost
+    port: 7002
+  review-service:
+    host: localhost
+    port: 7004
+  recommendation-service:
+    host: localhost
+    port: 7003
+
 ---
+
 spring.config.activate.on-profile: docker
 server.port: 9666
+
+app:
+  product-service:
+    host: host.docker.internal
+    port: 7002
+  review-service:
+    host: host.docker.internal
+    port: 7004
+  recommendation-service:
+    host: host.docker.internal
+    port: 7003
