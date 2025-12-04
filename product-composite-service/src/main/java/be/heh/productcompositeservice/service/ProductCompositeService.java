@@ -4,6 +4,7 @@ package be.heh.productcompositeservice.service;
 import be.heh.productcompositeservice.DTOs.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,9 +18,24 @@ import java.util.List;
 public class ProductCompositeService {
 
     private final RestTemplate restTemplate;
-    private final String PRODUCT_SERVICE_URL = "http://localhost:7002";
-    private final String RECOMMENDATION_SERVICE_URL = "http://localhost:7003";
-    private final String REVIEW_SERVICE_URL = "http://localhost:7004";
+
+    @Value("${app.product-service.host}")
+    private String productServiceHost;
+
+    @Value("${app.product-service.port}")
+    private int productServicePort;
+
+    @Value("${app.review-service.host}")
+    private String reviewServiceHost;
+
+    @Value("${app.review-service.port}")
+    private int reviewServicePort;
+
+    @Value("${app.recommendation-service.host}")
+    private String recommendationServiceHost;
+
+    @Value("${app.recommendation-service.port}")
+    private int recommendationServicePort;
 
     @Autowired
     public ProductCompositeService(RestTemplate restTemplate) {
@@ -49,11 +65,8 @@ public class ProductCompositeService {
 
     private Product getProductInfo(int productId) {
         try {
-            return restTemplate.getForObject(
-                PRODUCT_SERVICE_URL + "/product/{productId}",
-                Product.class,
-                productId
-            );
+            String url = "http://" + productServiceHost + ":" + productServicePort + "/product/" + productId;
+            return restTemplate.getForObject(url, Product.class);
         } catch (HttpClientErrorException ex) {
             if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return null;
@@ -67,11 +80,8 @@ public class ProductCompositeService {
 
     private List<Recommendation> getRecommendations(int productId) {
         try {
-            Recommendation[] recommendations = restTemplate.getForObject(
-                RECOMMENDATION_SERVICE_URL + "/recommendations/{productId}",
-                Recommendation[].class,
-                productId
-            );
+            String url = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendations/" + productId;
+            Recommendation[] recommendations = restTemplate.getForObject(url, Recommendation[].class);
             return recommendations != null ? Arrays.asList(recommendations) : Collections.emptyList();
         } catch (Exception ex) {
             log.error("Error retrieving recommendations: {}", ex.getMessage());
@@ -81,11 +91,8 @@ public class ProductCompositeService {
 
     private List<Review> getReviews(int productId) {
         try {
-            Review[] reviews = restTemplate.getForObject(
-                REVIEW_SERVICE_URL + "/reviews/{productId}",
-                Review[].class,
-                productId
-            );
+            String url = "http://" + reviewServiceHost + ":" + reviewServicePort + "/reviews/" + productId;
+            Review[] reviews = restTemplate.getForObject(url, Review[].class);
             return reviews != null ? Arrays.asList(reviews) : Collections.emptyList();
         } catch (Exception ex) {
             log.error("Error retrieving reviews: {}", ex.getMessage());
