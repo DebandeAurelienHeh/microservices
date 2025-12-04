@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  recommendation-service:
+    build:
+      context: ./recommendation-service
+      dockerfile: Dockerfile
+    container_name: recommendation-service
+    ports:
+      - "9666:9666"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservices-network
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - "9667:9666"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservices-network
+
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: review-service
+    ports:
+      - "9668:9666"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservices-network
+
+  product-composite-service:
+    build:
+      context: ./product-composite-service
+      dockerfile: Dockerfile
+    container_name: product-composite-service
+    ports:
+      - "9669:9666"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - recommendation-service
+      - product-service
+      - review-service
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
