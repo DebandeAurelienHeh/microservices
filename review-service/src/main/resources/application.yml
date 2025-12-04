@@ -1,0 +1,5 @@
+spring.application.name: review-service
+server.port: 7004
+---
+spring.config.activate.on-profile: docker
+server.port: 9666
