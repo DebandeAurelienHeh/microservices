@@ -1,8 +1,8 @@
-package be.heh.recommendationservice;
+package be.heh.recommendationservice.model;
 
 public record Recommendation(
     Integer productId,
-    Integer recommendationId,
+    String recommendationId,
     String author,
     Integer rate,
     String content

@@ -1,24 +1,24 @@
 package be.heh.productservice.model;
 
 public class Product {
-    private int productId;
+    private String productId;
     private String name;
     private int weight;
 
     public Product() {
     }
 
-    public Product(int productId, String name, int weight) {
+    public Product(String productId, String name, int weight) {
         this.productId = productId;
         this.name = name;
         this.weight = weight;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 

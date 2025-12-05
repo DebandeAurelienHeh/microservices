@@ -1,5 +1,20 @@
-spring.application.name: product-service
-server.port: 7002
+spring:
+  application:
+    name: product-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/product-db
+server:
+  port: 7002
+
 ---
-spring.config.activate.on-profile: docker
-server.port: 9666
+spring:
+  config:
+    activate:
+      on-profile: docker
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/product-db
+server:
+  port: 9666
+

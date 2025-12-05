@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27021:27017"
+    networks:
+      - microservices-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   postgres:
     image: postgres:15
     container_name: reviews-postgres
@@ -24,6 +37,9 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
       - microservices-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   product-service:
     build:
@@ -36,6 +52,9 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
       - microservices-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   review-service:
     build:
@@ -48,6 +67,9 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     networks:
       - microservices-network
+    depends_on:
+      mongodb:
+        condition: service_healthy
 
   product-composite-service:
     build:
@@ -58,12 +80,12 @@ services:
       - "9669:9666"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - microservices-network
     depends_on:
       - recommendation-service
       - product-service
       - review-service
-    networks:
-      - microservices-network
 
 networks:
   microservices-network:
