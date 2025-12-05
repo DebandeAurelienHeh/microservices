@@ -1,11 +1,11 @@
 package be.heh.reviewservice.service;
 
-import be.heh.reviewservice.model.Review;
 import be.heh.reviewservice.model.ReviewEntity;
 import be.heh.reviewservice.repository.ReviewRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.scheduler.Schedulers;
+import reactor.core.publisher.Mono;
 
 @Service
 public class ReviewService {
@@ -16,13 +16,19 @@ public class ReviewService {
         this.repository = repository;
     }
 
-    public Flux<Review> getReviews(int productId) {
-        return Flux.defer(() -> Flux.fromIterable(repository.findByProductId(productId)))
-                .map(this::toModel)
-                .subscribeOn(Schedulers.boundedElastic());
+    public Flux<ReviewEntity> getReviews(int productId) {
+        return Flux.fromIterable(repository.findByProductId(productId));
     }
 
-    private Review toModel(ReviewEntity e) {
-        return new Review(e.getProductId(), e.getReviewId(), e.getAuthor(), e.getSubject(), e.getContent());
+    public Mono<ReviewEntity> createReview(ReviewEntity review) {
+        return Mono.fromCallable(() -> repository.save(review));
+    }
+
+    public Mono<Void> deleteReview(int reviewId) {
+        return Mono.fromCallable(() -> {
+            repository.deleteById(reviewId);
+            return null;
+        });
     }
 }
+

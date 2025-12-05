@@ -10,8 +10,6 @@ services:
       POSTGRES_PASSWORD: root
     networks:
       - microservices-network
-    volumes:
-      - ./reviews_setup.sql:/docker-entrypoint-initdb.d/reviews_setup.sql:ro
     ports:
       - "9670:5432"
 

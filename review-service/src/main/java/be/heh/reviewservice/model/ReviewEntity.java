@@ -10,7 +10,7 @@ public class ReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reviewId;
 
-    @Column(nullable = false)
+    @Column(name = "product_id",nullable = false)
     private Integer productId;
 
     private String author;
