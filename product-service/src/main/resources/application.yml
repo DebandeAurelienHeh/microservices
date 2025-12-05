@@ -1,9 +1,8 @@
 spring:
   application:
     name: product-service
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/product-db
+  mongodb:
+    uri: mongodb://localhost:27017/product-db
 server:
   port: 7002
 
@@ -12,9 +11,8 @@ spring:
   config:
     activate:
       on-profile: docker
-  data:
-    mongodb:
-      uri: mongodb://mongodb:27017/product-db
+  mongodb:
+    uri: mongodb://mongodb:27017/product-db
 server:
   port: 9666
 
