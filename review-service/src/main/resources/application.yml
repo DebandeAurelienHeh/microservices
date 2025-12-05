@@ -1,5 +1,18 @@
-spring.application.name: review-service
-server.port: 7004
+spring:
+  application:
+    name: review-service
+  datasource:
+    url: jdbc:postgresql://postgres:5432/reviews
+    username: postgre
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 7004
+
 ---
 spring.config.activate.on-profile: docker
 server.port: 9666
