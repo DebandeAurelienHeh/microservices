@@ -2,23 +2,34 @@ package be.heh.productservice.controller;
 
 import be.heh.productservice.model.Product;
 import be.heh.productservice.service.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/product")
+@RequiredArgsConstructor
+@Slf4j
 public class ProductController {
+
     private final ProductService productService;
 
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    @GetMapping("/product/{productId}")
+    public Mono<Product> getProduct(@PathVariable int productId) {
+        log.info("GET /product/{}", productId);
+        return productService.getProduct(productId);
     }
 
-    @GetMapping("/{productId}")
-    public Mono<Product> getProduct(@PathVariable int productId) {
-        return Mono.just(productService.getProduct(productId));
+    @PostMapping("/product")
+    public Mono<Product> createProduct(@RequestBody Product product) {
+        log.info("POST /product: {}", product);
+        return productService.createProduct(product);
+    }
+
+    @DeleteMapping("/product/{productId}")
+    public Mono<Void> deleteProduct(@PathVariable int productId) {
+        log.info("DELETE /product/{}", productId);
+        return productService.deleteProduct(productId);
     }
 }
+
