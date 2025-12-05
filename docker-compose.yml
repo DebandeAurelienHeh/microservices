@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: reviews-postgres
+    environment:
+      POSTGRES_DB: reviews
+      POSTGRES_USER: postgre
+      POSTGRES_PASSWORD: root
+    networks:
+      - microservices-network
+    ports:
+      - "9670:5432"
+
   recommendation-service:
     build:
       context: ./recommendation-service
