@@ -7,6 +7,7 @@ import be.heh.productservice.persistence.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -26,6 +27,11 @@ public class ProductService {
                     return repository.save(entity);
                 })
                 .map(mapper::entityToApi);                                      // Convert saved entity back to API model
+    }
+
+    public Flux<Product> getAllProducts() {
+        return repository.findAll()
+                .map(mapper::entityToApi);
     }
 
     public Mono<Product> getProduct(int productId) {

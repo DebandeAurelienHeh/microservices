@@ -5,6 +5,7 @@ import be.heh.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -18,6 +19,12 @@ public class ProductController {
     public Mono<Product> getProduct(@PathVariable int productId) {
         log.info("GET /product/{}", productId);
         return productService.getProduct(productId);
+    }
+
+    @GetMapping("/products")
+    public Flux<Product> getAllProducts() {
+        log.info("GET /product");
+        return productService.getAllProducts();
     }
 
     @PostMapping("/product")
