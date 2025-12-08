@@ -16,20 +16,19 @@ public class ProductService {
 
     private final ProductRepository repository;
     private final ProductMapper mapper;
-    private final SequenceGeneratorService sequenceGenerator; // On injecte le générateur
+    private final SequenceGeneratorService sequenceGenerator;
 
     public Mono<Product> createProduct(Product product) {
-        return sequenceGenerator.generateSequence("products_sequence") // 1. On demande le prochain ID
+        return sequenceGenerator.generateSequence("products_sequence")  // Generate a new sequence ID
                 .flatMap(sequenceId -> {
                     ProductEntity entity = mapper.apiToEntity(product);
-                    entity.setProductId(sequenceId); // 2. On l'assigne à l'entité
-                    return repository.save(entity);  // 3. On sauvegarde
+                    entity.setProductId(sequenceId);                            // Set the generated sequence ID
+                    return repository.save(entity);
                 })
-                .map(mapper::entityToApi);
+                .map(mapper::entityToApi);                                      // Convert saved entity back to API model
     }
 
     public Mono<Product> getProduct(int productId) {
-        // Attention : Utilise bien findByProductId et non findById
         return repository.findByProductId(productId)
                 .map(mapper::entityToApi);
     }

@@ -1,40 +1,14 @@
 package be.heh.productservice.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
-    private String productId;
+    private Integer productId;
     private String name;
     private int weight;
-
-    public Product() {
-    }
-
-    public Product(String productId, String name, int weight) {
-        this.productId = productId;
-        this.name = name;
-        this.weight = weight;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
 }
