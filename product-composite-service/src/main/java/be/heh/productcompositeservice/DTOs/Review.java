@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Review {
-    private int productId;
-    private int reviewId;
+    private Integer productId;
+    private Integer reviewId;
     private String author;
     private String subject;
     private String content;

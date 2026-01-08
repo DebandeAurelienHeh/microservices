@@ -13,4 +13,9 @@ public class Recommendation {
     private String author;
     private Integer rate;
     private String content;
+
+    public  Integer productId() {
+        return productId;
+    }
 }
+
