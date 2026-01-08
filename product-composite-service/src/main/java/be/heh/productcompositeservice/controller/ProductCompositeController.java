@@ -1,6 +1,8 @@
-// controller/ProductCompositeController.java
 package be.heh.productcompositeservice.controller;
 
+import be.heh.productcompositeservice.DTOs.Product;
+import be.heh.productcompositeservice.DTOs.Recommendation;
+import be.heh.productcompositeservice.DTOs.Review;
 import be.heh.productcompositeservice.DTOs.ProductComposite;
 import be.heh.productcompositeservice.service.ProductCompositeService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,75 +23,67 @@ public class ProductCompositeController {
         this.productCompositeService = productCompositeService;
     }
 
+    // --- GET ---
+
     @GetMapping("/{productId}")
     public Mono<ResponseEntity<ProductComposite>> getProductComposite(@PathVariable int productId) {
-        log.info("ProductCompositeController: Retrieving composite product for productId: {}", productId);
-
         return productCompositeService.getProduct(productId)
-                .map(composite -> {
-                    log.info("ProductCompositeController: Successfully retrieved composite product for productId: {}", productId);
-                    return ResponseEntity.ok(composite);
-                })
-                .defaultIfEmpty(ResponseEntity.notFound().build())
-                .doOnSuccess(response -> {
-                    if (response.getStatusCode().value() == 404) {
-                        log.info("ProductCompositeController: Product with id {} not found", productId);
-                    }
-                });
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    // --- POST ---
+
+    @PostMapping("/product")
+    public Mono<ResponseEntity<Product>> createProduct(@RequestBody Product product) {
+        log.info("ProductCompositeController: Request to create product: {}", product.getName());
+        return productCompositeService.createProduct(product)
+                .map(ResponseEntity::ok);
+    }
+
+    @PostMapping("/recommendation")
+    public Mono<ResponseEntity<Recommendation>> createRecommendation(@RequestBody Recommendation recommendation) {
+        log.info("ProductCompositeController: Request to create recommendation for product: {}", recommendation.productId());
+        return productCompositeService.createRecommendation(recommendation)
+                .map(ResponseEntity::ok);
+    }
+
+    @PostMapping("/review")
+    public Mono<ResponseEntity<Review>> createReview(@RequestBody Review review) {
+        log.info("ProductCompositeController: Request to create review for product: {}", review.getProductId());
+        return productCompositeService.createReview(review)
+                .map(ResponseEntity::ok);
+    }
+
+    // --- DELETE ---
 
     @DeleteMapping("/{productId}")
     public Mono<ResponseEntity<Void>> deleteProductComposite(@PathVariable int productId) {
-        log.info("ProductCompositeController: Deleting composite product for productId: {}", productId);
-
         return productCompositeService.deleteProductComposite(productId)
-                .then(Mono.fromCallable(() -> {
-                    log.info("ProductCompositeController: Successfully deleted composite product for productId: {}", productId);
-                    return ResponseEntity.noContent().build();
-                }));
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @DeleteMapping("/{productId}/recommendation/{recommendationId}")
     public Mono<ResponseEntity<Void>> deleteRecommendation(@PathVariable int productId, @PathVariable String recommendationId) {
-        log.info("ProductCompositeController: Deleting recommendation {} for productId: {}", recommendationId, productId);
-
         return productCompositeService.deleteRecommendation(productId, recommendationId)
-                .then(Mono.fromCallable(() -> {
-                    log.info("ProductCompositeController: Successfully deleted recommendation {} for productId: {}", recommendationId, productId);
-                    return ResponseEntity.noContent().build();
-                }));
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @DeleteMapping("/{productId}/recommendations")
     public Mono<ResponseEntity<Void>> deleteAllRecommendationsForProduct(@PathVariable int productId) {
-        log.info("ProductCompositeController: Deleting all recommendations for productId: {}", productId);
-
         return productCompositeService.deleteAllRecommendations(productId)
-                .then(Mono.fromCallable(() -> {
-                    log.info("ProductCompositeController: Successfully deleted all recommendations for productId: {}", productId);
-                    return ResponseEntity.noContent().build();
-                }));
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @DeleteMapping("/{productId}/reviews")
     public Mono<ResponseEntity<Void>> deleteAllReviewsForProduct(@PathVariable int productId) {
-        log.info("ProductCompositeController: Deleting all reviews for productId: {}", productId);
-
         return productCompositeService.deleteAllReviewsForProduct(productId)
-                .then(Mono.fromCallable(() -> {
-                    log.info("ProductCompositeController: Successfully deleted all reviews for productId: {}", productId);
-                    return ResponseEntity.noContent().build();
-                }));
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 
     @DeleteMapping("/review/{reviewId}")
     public Mono<ResponseEntity<Void>> deleteReview(@PathVariable int reviewId) {
-        log.info("ProductCompositeController: Deleting review {}", reviewId);
-
         return productCompositeService.deleteReview(reviewId)
-                .then(Mono.fromCallable(() -> {
-                    log.info("ProductCompositeController: Successfully deleted review {}", reviewId);
-                    return ResponseEntity.noContent().build();
-                }));
+                .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
