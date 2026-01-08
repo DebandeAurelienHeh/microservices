@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/product-composite")
@@ -21,16 +22,19 @@ public class ProductCompositeController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductComposite> getProductComposite(@PathVariable int productId) {
+    public Mono<ResponseEntity<ProductComposite>> getProductComposite(@PathVariable int productId) {
         log.info("ProductCompositeController: Retrieving composite product for productId: {}", productId);
-        
-        ProductComposite composite = productCompositeService.getProduct(productId);
-        if (composite == null) {
-            log.info("ProductCompositeController: Product with id {} not found", productId);
-            return ResponseEntity.notFound().build();
-        }
 
-        log.info("ProductCompositeController: Successfully retrieved composite product for productId: {}", productId);
-        return ResponseEntity.ok(composite);
+        return productCompositeService.getProduct(productId)
+                .map(composite -> {
+                    log.info("ProductCompositeController: Successfully retrieved composite product for productId: {}", productId);
+                    return ResponseEntity.ok(composite);
+                })
+                .defaultIfEmpty(ResponseEntity.notFound().build())
+                .doOnSuccess(response -> {
+                    if (response.getStatusCode().value() == 404) {
+                        log.info("ProductCompositeController: Product with id {} not found", productId);
+                    }
+                });
     }
 }
