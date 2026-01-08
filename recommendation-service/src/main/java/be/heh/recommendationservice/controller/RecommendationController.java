@@ -32,4 +32,10 @@ public class RecommendationController {
         log.info("DELETE /recommendation/{}", productId);
         return recommendationService.deleteRecommendations(productId);
     }
+
+    @DeleteMapping("/{productId}/recommendation/{recommendationId}")
+    public Mono<Void> deleteRecommendation(@PathVariable int productId, @PathVariable String recommendationId) {
+        log.info("DELETE /{}/recommendation/{}", productId, recommendationId);
+        return recommendationService.deleteRecommendation(productId, recommendationId);
+    }
 }

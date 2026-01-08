@@ -42,4 +42,12 @@ public class RecommendationService {
                 .then()
                 .doOnSuccess(v -> log.info("Recommendations deleted for productId: {}", productId));
     }
+
+    public Mono<Void> deleteRecommendation(int productId, String recommendationId) {
+        log.info("Deleting recommendation {} for productId: {}", recommendationId, productId);
+
+        return repository.deleteById(recommendationId)
+                .doOnSuccess(v -> log.info("Recommendation {} deleted for productId: {}", recommendationId, productId))
+                .doOnError(ex -> log.error("Error deleting recommendation {} for productId {}: {}", recommendationId, productId, ex.getMessage()));
+    }
 }

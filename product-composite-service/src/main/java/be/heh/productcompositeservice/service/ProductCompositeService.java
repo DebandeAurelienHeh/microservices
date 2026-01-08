@@ -86,4 +86,70 @@ public class ProductCompositeService {
                 .doOnError(ex -> log.error("Error retrieving reviews: {}", ex.getMessage()))
                 .onErrorResume(ex -> Flux.empty());
     }
+
+    public Mono<Void> deleteProductComposite(int productId) {
+        Mono<Void> deleteRecommendationsMono = deleteAllRecommendations(productId);
+        Mono<Void> deleteReviewsMono = deleteAllReviewsForProduct(productId);
+        Mono<Void> deleteProductMono = deleteProduct(productId);
+
+        return Mono.when(deleteRecommendationsMono, deleteReviewsMono)
+                .then(deleteProductMono)
+                .doOnError(ex -> log.error("Error deleting composite product: {}", ex.getMessage()));
+    }
+
+    private Mono<Void> deleteProduct(int productId) {
+        String url = "http://" + productServiceHost + ":" + productServicePort + "/product/" + productId;
+
+        return webClientBuilder.build()
+                .delete()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .doOnError(ex -> log.error("Error deleting product: {}", ex.getMessage()))
+                .onErrorResume(ex -> Mono.empty());
+    }
+
+    public Mono<Void> deleteAllRecommendations(int productId) {
+        String url = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/recommendation/" + productId;
+
+        return webClientBuilder.build()
+                .delete()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .doOnError(ex -> log.error("Error deleting recommendations: {}", ex.getMessage()))
+                .onErrorResume(ex -> Mono.empty());
+    }
+
+    public Mono<Void> deleteAllReviewsForProduct(int productId) {
+        return getReviews(productId)
+                .flatMap(review -> deleteReview(review.getReviewId()))
+                .then()
+                .doOnError(ex -> log.error("Error deleting reviews for product: {}", ex.getMessage()))
+                .onErrorResume(ex -> Mono.empty());
+    }
+
+    public Mono<Void> deleteRecommendation(int productId, String recommendationId) {
+        String url = "http://" + recommendationServiceHost + ":" + recommendationServicePort + "/" + productId + "/recommendation/" + recommendationId;
+
+        return webClientBuilder.build()
+                .delete()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .doOnError(ex -> log.error("Error deleting recommendation: {}", ex.getMessage()))
+                .onErrorResume(ex -> Mono.empty());
+    }
+
+    public Mono<Void> deleteReview(int reviewId) {
+        String url = "http://" + reviewServiceHost + ":" + reviewServicePort + "/reviews/" + reviewId;
+
+        return webClientBuilder.build()
+                .delete()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .doOnError(ex -> log.error("Error deleting review: {}", ex.getMessage()))
+                .onErrorResume(ex -> Mono.empty());
+    }
 }
